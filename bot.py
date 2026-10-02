@@ -1,33 +1,15 @@
-# XAUUSD Trading Bot - Version 1
-# Strategy: BOS -> Pullback -> Confirmation
+import requests
 
-def analyse_market(candles):
-    if len(candles) < 5:
-        return "WAIT"
+url = "https://query1.finance.yahoo.com/v8/finance/chart/XAUUSD=X?interval=15m&range=1d"
 
-    # Most recent candles
-    previous = candles[-3]
-    current = candles[-1]
+response = requests.get(url, timeout=10)
+data = response.json()
 
-    # Simple structure check
-    if current["close"] > previous["high"]:
-        return "BULLISH BOS"
+result = data["chart"]["result"][0]
 
-    if current["close"] < previous["low"]:
-        return "BEARISH BOS"
+prices = result["indicators"]["quote"][0]["close"]
 
-    return "WAIT"
+latest_price = prices[-1]
 
-
-# Test data
-candles = [
-    {"high": 2650, "low": 2640, "close": 2645},
-    {"high": 2655, "low": 2643, "close": 2650},
-    {"high": 2665, "low": 2648, "close": 2660},
-    {"high": 2675, "low": 2655, "close": 2670},
-    {"high": 2680, "low": 2660, "close": 2678},
-]
-
-signal = analyse_market(candles)
-
-print("XAUUSD BOT SIGNAL:", signal)
+print("XAUUSD M15")
+print("LATEST GOLD PRICE:", latest_price)
